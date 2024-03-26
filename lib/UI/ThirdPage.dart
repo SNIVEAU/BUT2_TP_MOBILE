@@ -16,12 +16,12 @@ class ThirdPage extends StatelessWidget {
               'Nombre Mystère',
               style: TextStyle(fontSize: 24.0),
             ),
-            SizedBox(height: 20.0), // Espacement entre le contenu existant et les règles
+            SizedBox(height: 20.0), 
             Text(
               'Règles du jeu : Nombre mystère',
               style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 10.0), // Espacement entre les règles et le contenu suivant
+            SizedBox(height: 10.0),
             Text(
               '1. Objectif du jeu : Deviner un nombre mystère choisi aléatoirement par l\'ordinateur.',
               style: TextStyle(fontSize: 16.0),
@@ -38,7 +38,6 @@ class ThirdPage extends StatelessWidget {
               '4. Fin du jeu : Le jeu se termine lorsque le nombre mystère est trouvé.',
               style: TextStyle(fontSize: 16.0),
             ),
-            // Ajoutez d'autres règles si nécessaire
           ],
         ),
       ),

@@ -36,8 +36,8 @@ class _FirstPageState extends State<FirstPage> {
               style: TextStyle(fontSize: 18),
             ),
             SizedBox(height: 10),
-            Container( // Container pour définir la largeur du bouton
-              width: 200, // Largeur désirée du bouton
+            Container( 
+              width: 200, 
               child: TextField(
                 onChanged: (value) {
                   setState(() {

@@ -37,7 +37,7 @@ class _GamePageState extends State<GamePage> {
   }
 
   void _evaluateGuess() {
-  // Vérifiez d'abord si le texte est un nombre
+  
   if (!RegExp(r'^[0-9]*$').hasMatch(_guess)) {
     _textFieldController.clear();
     return;
