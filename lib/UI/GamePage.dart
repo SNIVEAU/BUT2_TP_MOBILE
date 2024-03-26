@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 import './SecondPage.dart';
 import './GameResult.dart';
+import './FirstPage.dart';
 
 class GamePage extends StatefulWidget {
   final String name;
@@ -18,6 +19,9 @@ class _GamePageState extends State<GamePage> {
   String _guess = '';
   String _feedback = '';
   int _attempts = 0;
+  int _level = 1;
+  int _minNumber = 1;
+  int _maxNumber = 100;
 
   @override
   void initState() {
@@ -27,56 +31,80 @@ class _GamePageState extends State<GamePage> {
 
   void _generateTargetNumber() {
     final random = Random();
-    _targetNumber = random.nextInt(100) + 1;
+    _minNumber = 1;
+    _maxNumber = _level * 10;
+    _targetNumber = random.nextInt(_maxNumber - _minNumber + 1) + _minNumber;
   }
 
   void _evaluateGuess() {
-    int guess = int.tryParse(_guess) ?? 0;
-    _attempts++; // Incrémenter le nombre de tentatives à chaque devinette
-    if (guess > _targetNumber) {
-      setState(() {
-        _feedback = 'Trop haut';
-      });
-    } else if (guess < _targetNumber) {
-      setState(() {
-        _feedback = 'Trop bas';
-      });
-    } else {
-      // Créer un objet GameResult avec les données pertinentes
-      GameResult result = GameResult(name: widget.name, attempts: _attempts);
-      // Ajouter le résultat à la liste statique de résultats (appeler la fonction addResult)
-      addResult(result);
-      // Afficher la boîte de dialogue de confirmation pour recommencer
-      _showRestartDialog();
-    }
+  // Vérifiez d'abord si le texte est un nombre
+  if (!RegExp(r'^[0-9]*$').hasMatch(_guess)) {
+    _textFieldController.clear();
+    return;
   }
 
-  void _resetGame() {
+  int guess = int.tryParse(_guess) ?? 0;
+  _attempts++;
+  if (_attempts >= 10) {
+    _showGameOverDialog();
+    return;
+  }
+  if (guess > _targetNumber) {
+    setState(() {
+      _feedback = 'Trop haut';
+    });
+  } else if (guess < _targetNumber) {
+    setState(() {
+      _feedback = 'Trop bas';
+    });
+  } else {
+    GameResult result = GameResult(name: widget.name, attempts: _attempts, level: _level);
+    addResult(result);
+    _level++;
     _attempts = 0;
     _generateTargetNumber();
-    _textFieldController.clear();
+    _showNextLevelDialog();
   }
+  _textFieldController.clear();
+}
 
-  void _showRestartDialog() {
+  void _showNextLevelDialog() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Félicitations!'),
-          content: Text('Voulez-vous recommencer?'),
+          content: Text('Passer au niveau suivant?'),
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Fermer la boîte de dialogue
-                _resetGame(); // Réinitialiser le jeu
+                Navigator.of(context).pop();
+                setState(() {
+                  _feedback = '';
+                });
               },
               child: Text('Oui'),
             ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showGameOverDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Game Over'),
+          content: Text('Vous avez dépassé 10 tentatives'),
+          actions: <Widget>[
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Fermer la boîte de dialogue
+                Navigator.of(context).pop();
+                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => FirstPage()));
               },
-              child: Text('Non'),
+              child: Text('Rejouer'),
             ),
           ],
         );
@@ -97,7 +125,7 @@ class _GamePageState extends State<GamePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              '${widget.name}, Essaie de trouver le nombre de 1 à 100!',
+              '${widget.name}, Essaie de trouver le nombre entre $_minNumber et $_maxNumber!',
               style: TextStyle(fontSize: 18),
               textAlign: TextAlign.center,
             ),
@@ -127,7 +155,7 @@ class _GamePageState extends State<GamePage> {
             ),
             SizedBox(height: 20),
             Text(
-              'Nombre de tentatives: $_attempts', // Afficher le nombre de tentatives
+              'Nombre de tentatives: $_attempts',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
@@ -145,7 +173,7 @@ class _GamePageState extends State<GamePage> {
 
   @override
   void dispose() {
-    _textFieldController.dispose(); // Dispose the TextEditingController
+    _textFieldController.dispose();
     super.dispose();
   }
 }

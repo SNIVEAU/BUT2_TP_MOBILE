@@ -33,6 +33,11 @@ class SecondPage extends StatelessWidget {
                   style: TextStyle(fontSize: 18),
                 ),
                 SizedBox(height: 10),
+                Text(
+                  'Niveau: ${result.level}',
+                  style: TextStyle(fontSize: 18),
+                ),
+                SizedBox(height: 20),
               ],
             ] else ...[
               // Afficher un message si aucune donnée de résultat n'est disponible
