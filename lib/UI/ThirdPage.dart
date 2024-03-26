@@ -9,7 +9,38 @@ class ThirdPage extends StatelessWidget {
         centerTitle: true,
       ),
       body: Center(
-        child: Text('Third Page Content'),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Nombre Mystère',
+              style: TextStyle(fontSize: 24.0),
+            ),
+            SizedBox(height: 20.0), // Espacement entre le contenu existant et les règles
+            Text(
+              'Règles du jeu : Nombre mystère',
+              style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 10.0), // Espacement entre les règles et le contenu suivant
+            Text(
+              '1. Objectif du jeu : Deviner un nombre mystère choisi aléatoirement par l\'ordinateur.',
+              style: TextStyle(fontSize: 16.0),
+            ),
+            Text(
+              '2. Plage de nombres : Le nombre mystère est choisi dans une plage définie.',
+              style: TextStyle(fontSize: 16.0),
+            ),
+            Text(
+              '3. Déroulement du jeu : Les joueurs proposent des nombres jusqu\'à ce que le nombre mystère soit trouvé.',
+              style: TextStyle(fontSize: 16.0),
+            ),
+            Text(
+              '4. Fin du jeu : Le jeu se termine lorsque le nombre mystère est trouvé.',
+              style: TextStyle(fontSize: 16.0),
+            ),
+            // Ajoutez d'autres règles si nécessaire
+          ],
+        ),
       ),
     );
   }
