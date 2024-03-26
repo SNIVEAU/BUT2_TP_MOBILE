@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
+import './SecondPage.dart';
+import './GameResult.dart';
 
 class GamePage extends StatefulWidget {
   final String name;
@@ -15,6 +17,7 @@ class _GamePageState extends State<GamePage> {
   TextEditingController _textFieldController = TextEditingController();
   String _guess = '';
   String _feedback = '';
+  int _attempts = 0;
 
   @override
   void initState() {
@@ -24,11 +27,12 @@ class _GamePageState extends State<GamePage> {
 
   void _generateTargetNumber() {
     final random = Random();
-    _targetNumber = random.nextInt(100) + 1; // Generates a random number between 1 and 100
+    _targetNumber = random.nextInt(100) + 1;
   }
 
   void _evaluateGuess() {
     int guess = int.tryParse(_guess) ?? 0;
+    _attempts++; // Incrémenter le nombre de tentatives à chaque devinette
     if (guess > _targetNumber) {
       setState(() {
         _feedback = 'Trop haut';
@@ -38,11 +42,46 @@ class _GamePageState extends State<GamePage> {
         _feedback = 'Trop bas';
       });
     } else {
-      setState(() {
-        _feedback = 'Bien joué, ${widget.name}! vous avez trouvé $_targetNumber!';
-        _textFieldController.clear(); // Clear the text field
-      });
+      // Créer un objet GameResult avec les données pertinentes
+      GameResult result = GameResult(name: widget.name, attempts: _attempts);
+      // Ajouter le résultat à la liste statique de résultats (appeler la fonction addResult)
+      addResult(result);
+      // Afficher la boîte de dialogue de confirmation pour recommencer
+      _showRestartDialog();
     }
+  }
+
+  void _resetGame() {
+    _attempts = 0;
+    _generateTargetNumber();
+    _textFieldController.clear();
+  }
+
+  void _showRestartDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Félicitations!'),
+          content: Text('Voulez-vous recommencer?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Fermer la boîte de dialogue
+                _resetGame(); // Réinitialiser le jeu
+              },
+              child: Text('Oui'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Fermer la boîte de dialogue
+              },
+              child: Text('Non'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -85,6 +124,12 @@ class _GamePageState extends State<GamePage> {
                 _evaluateGuess();
               },
               child: Text('Envoyer'),
+            ),
+            SizedBox(height: 20),
+            Text(
+              'Nombre de tentatives: $_attempts', // Afficher le nombre de tentatives
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
             ),
             SizedBox(height: 20),
             Text(
